@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Fuel Logs</h2>
+  <a href="{{ url_for('fuel_bp.new_fuel_log') }}" class="btn btn-primary">+ New Fuel Log</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-auto">
+    <select name="vehicle_id" class="form-select" onchange="this.form.submit()">
+      <option value="">All Vehicles</option>
+      {% for v in vehicles %}
+        <option value="{{ v.id }}" {% if selected_vehicle_id == v.id %}selected{% endif %}>
+          {{ v.reg_number }} — {{ v.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+<div class="mb-3">
+  <a href="{{ url_for('fuel_bp.list_expenses') }}" class="btn btn-outline-secondary btn-sm">View Expenses</a>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Vehicle</th>
+      <th>Liters</th>
+      <th>Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in fuel_logs %}
+    <tr>
+      <td>{{ log.date }}</td>
+      <td>{{ log.vehicle.reg_number }} — {{ log.vehicle.name }}</td>
+      <td>{{ log.liters }}</td>
+      <td>${{ "%.2f"|format(log.cost) }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-center text-muted">No fuel logs found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Vehicle Reports</h2>
+  <a href="{{ url_for('reports_bp.export_csv') }}" class="btn btn-outline-secondary">Export CSV</a>
+</div>
+
+<p class="text-muted">
+  Estimated revenue is a placeholder assumption: completed-trip planned km &times;
+  ${{ revenue_per_km }}/km. Swap in real revenue figures once available.
+</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Vehicle</th>
+      <th>Fuel Efficiency (km/L)</th>
+      <th>Operational Cost</th>
+      <th>Estimated Revenue</th>
+      <th>ROI</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+    <tr>
+      <td>{{ row.vehicle.reg_number }} — {{ row.vehicle.name }}</td>
+      <td>{{ row.fuel_efficiency if row.fuel_efficiency is not none else "N/A" }}</td>
+      <td>${{ "%.2f"|format(row.operational_cost) }}</td>
+      <td>${{ "%.2f"|format(row.estimated_revenue) }}</td>
+      <td>{{ row.vehicle_roi if row.vehicle_roi is not none else "N/A" }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center text-muted">No vehicles found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

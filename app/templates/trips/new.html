@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-3">New Trip</h2>
+
+<form method="post" class="row g-3" style="max-width: 640px;">
+  <div class="col-md-6">
+    <label class="form-label">Source</label>
+    <input type="text" name="source" class="form-control" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Destination</label>
+    <input type="text" name="destination" class="form-control" required>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Vehicle</label>
+    <select name="vehicle_id" class="form-select" required>
+      <option value="" disabled selected>Choose a vehicle&hellip;</option>
+      {% for v in vehicles %}
+        <option value="{{ v.id }}">{{ v.reg_number }} — {{ v.name }} (max {{ v.max_load_kg }} kg)</option>
+      {% else %}
+        <option value="" disabled>No dispatchable vehicles available</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Driver</label>
+    <select name="driver_id" class="form-select" required>
+      <option value="" disabled selected>Choose a driver&hellip;</option>
+      {% for d in drivers %}
+        <option value="{{ d.id }}">{{ d.name }} ({{ d.license_number }})</option>
+      {% else %}
+        <option value="" disabled>No assignable drivers available</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Cargo weight (kg)</label>
+    <input type="number" step="any" min="0" name="cargo_weight_kg" class="form-control" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Planned distance (km)</label>
+    <input type="number" step="any" min="0" name="planned_distance_km" class="form-control" required>
+  </div>
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Create Trip</button>
+    <a href="{{ url_for('trips_bp.list_trips') }}" class="btn btn-link">Cancel</a>
+  </div>
+</form>
+{% endblock %}

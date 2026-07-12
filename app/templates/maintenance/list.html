@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Maintenance Logs</h2>
+  <a href="{{ url_for('maintenance_bp.new_maintenance') }}" class="btn btn-primary">+ New Record</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-auto">
+    <select name="status" class="form-select" onchange="this.form.submit()">
+      <option value="">All statuses</option>
+      {% for s in statuses %}
+        <option value="{{ s }}" {% if current_status == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+<table class="table table-hover align-middle">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Vehicle</th>
+      <th>Description</th>
+      <th>Cost</th>
+      <th>Status</th>
+      <th>Opened</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in logs %}
+    <tr>
+      <td>{{ log.id }}</td>
+      <td>{{ log.vehicle.reg_number }}</td>
+      <td>{{ log.description }}</td>
+      <td>{{ log.cost }}</td>
+      <td>
+        <span class="badge {% if log.status == 'Active' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+          {{ log.status }}
+        </span>
+      </td>
+      <td>{{ log.created_at }}</td>
+      <td>
+        {% if log.status == 'Active' %}
+        <form method="post" action="{{ url_for('maintenance_bp.close_maintenance', id=log.id) }}"
+              onsubmit="return confirm('Close this maintenance record and free up the vehicle?');">
+          <button type="submit" class="btn btn-sm btn-outline-success">Close</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="text-center text-muted">No maintenance records found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

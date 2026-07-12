@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Trips</h2>
+  <a href="{{ url_for('trips_bp.new_trip') }}" class="btn btn-primary">+ New Trip</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-auto">
+    <select name="status" class="form-select" onchange="this.form.submit()">
+      <option value="">All statuses</option>
+      {% for s in statuses %}
+        <option value="{{ s }}" {% if current_status == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+<table class="table table-hover align-middle">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Route</th>
+      <th>Vehicle</th>
+      <th>Driver</th>
+      <th>Cargo (kg)</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for trip in trips %}
+    <tr>
+      <td>{{ trip.id }}</td>
+      <td>{{ trip.source }} &rarr; {{ trip.destination }}</td>
+      <td>{{ trip.vehicle.reg_number }}</td>
+      <td>{{ trip.driver.name }}</td>
+      <td>{{ trip.cargo_weight_kg }}</td>
+      <td>
+        <span class="badge
+          {% if trip.status == 'Draft' %}bg-secondary
+          {% elif trip.status == 'Dispatched' %}bg-primary
+          {% elif trip.status == 'Completed' %}bg-success
+          {% else %}bg-danger{% endif %}">
+          {{ trip.status }}
+        </span>
+      </td>
+      <td><a href="{{ url_for('trips_bp.trip_detail', id=trip.id) }}" class="btn btn-sm btn-outline-secondary">View</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="text-center text-muted">No trips found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

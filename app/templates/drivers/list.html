@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Driver Management</h2>
+  <a href="{{ url_for('drivers_bp.new_driver') }}" class="btn btn-primary">+ New Driver</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-auto">
+    <select name="status" class="form-select">
+      <option value="">All Statuses</option>
+      {% for s in statuses %}
+        <option value="{{ s }}" {% if s == selected_status %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-outline-secondary">Filter</button>
+    <a href="{{ url_for('drivers_bp.list_drivers') }}" class="btn btn-outline-secondary">Clear</a>
+  </div>
+</form>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>License #</th>
+      <th>License Expiry</th>
+      <th>Safety Score</th>
+      <th>Status</th>
+      <th>Assignable</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in drivers %}
+    <tr>
+      <td>{{ d.name }}</td>
+      <td>{{ d.license_number }}</td>
+      <td class="{% if not d.is_license_valid() %}text-danger{% endif %}">{{ d.license_expiry }}</td>
+      <td>{{ d.safety_score }}</td>
+      <td>
+        <span class="badge {% if d.status == 'Available' %}bg-success{% elif d.status == 'On Trip' %}bg-primary{% elif d.status == 'Suspended' %}bg-danger{% else %}bg-secondary{% endif %}">
+          {{ d.status }}
+        </span>
+      </td>
+      <td>
+        {% if d.is_assignable() %}
+          <span class="badge bg-success">Yes</span>
+        {% else %}
+          <span class="badge bg-secondary">No</span>
+        {% endif %}
+      </td>
+      <td>
+        <a href="{{ url_for('drivers_bp.driver_detail', driver_id=d.id) }}" class="btn btn-sm btn-outline-secondary">View</a>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="text-center text-muted">No drivers found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

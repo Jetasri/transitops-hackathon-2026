@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Fleet Dashboard</h2>
+
+<form method="get" class="row g-2 mb-4">
+  <div class="col-auto">
+    <select name="type" class="form-select" onchange="this.form.submit()">
+      <option value="">All Types</option>
+      {% for t in vehicle_types %}
+        <option value="{{ t }}" {% if selected_type == t %}selected{% endif %}>{{ t }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <select name="status" class="form-select" onchange="this.form.submit()">
+      <option value="">All Statuses</option>
+      {% for s in vehicle_statuses %}
+        <option value="{{ s }}" {% if selected_status == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto">
+    <select name="region" class="form-select" onchange="this.form.submit()">
+      <option value="">All Regions</option>
+      {% for r in vehicle_regions %}
+        <option value="{{ r }}" {% if selected_region == r %}selected{% endif %}>{{ r }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% if selected_type or selected_status or selected_region %}
+  <div class="col-auto">
+    <a href="{{ url_for('dashboard_bp.index') }}" class="btn btn-outline-secondary">Clear Filters</a>
+  </div>
+  {% endif %}
+</form>
+
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card text-bg-primary h-100">
+      <div class="card-body">
+        <h6 class="card-title">Active Vehicles</h6>
+        <p class="display-6">{{ active_vehicles }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-bg-success h-100">
+      <div class="card-body">
+        <h6 class="card-title">Available Vehicles</h6>
+        <p class="display-6">{{ available_vehicles }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-bg-warning h-100">
+      <div class="card-body">
+        <h6 class="card-title">In Maintenance</h6>
+        <p class="display-6">{{ vehicles_in_maintenance }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-bg-info h-100">
+      <div class="card-body">
+        <h6 class="card-title">Fleet Utilization</h6>
+        <p class="display-6">{{ fleet_utilization_pct }}%</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h6 class="card-title">Active Trips</h6>
+        <p class="display-6">{{ active_trips }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h6 class="card-title">Pending Trips</h6>
+        <p class="display-6">{{ pending_trips }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h6 class="card-title">Drivers On Duty</h6>
+        <p class="display-6">{{ drivers_on_duty }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4">
+  <a href="{{ url_for('reports_bp.index') }}" class="btn btn-outline-primary">View Reports</a>
+  <a href="{{ url_for('fuel_bp.list_fuel_logs') }}" class="btn btn-outline-primary">Fuel Logs</a>
+  <a href="{{ url_for('fuel_bp.list_expenses') }}" class="btn btn-outline-primary">Expenses</a>
+</div>
+{% endblock %}

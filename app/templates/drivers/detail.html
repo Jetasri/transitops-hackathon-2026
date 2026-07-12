@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">{{ driver.name }}</h2>
+  <div>
+    <a href="{{ url_for('drivers_bp.edit_driver', driver_id=driver.id) }}" class="btn btn-outline-primary">Edit</a>
+    <form method="post" action="{{ url_for('drivers_bp.delete_driver', driver_id=driver.id) }}" class="d-inline"
+          onsubmit="return confirm('Delete this driver?');">
+      <button type="submit" class="btn btn-outline-danger">Delete</button>
+    </form>
+  </div>
+</div>
+
+<dl class="row">
+  <dt class="col-sm-3">License Number</dt><dd class="col-sm-9">{{ driver.license_number }}</dd>
+  <dt class="col-sm-3">License Category</dt><dd class="col-sm-9">{{ driver.license_category or "—" }}</dd>
+  <dt class="col-sm-3">License Expiry</dt>
+  <dd class="col-sm-9">
+    {{ driver.license_expiry }}
+    {% if driver.is_license_valid() %}
+      <span class="badge bg-success">Valid</span>
+    {% else %}
+      <span class="badge bg-danger">Expired</span>
+    {% endif %}
+  </dd>
+  <dt class="col-sm-3">Contact</dt><dd class="col-sm-9">{{ driver.contact_number or "—" }}</dd>
+  <dt class="col-sm-3">Safety Score</dt><dd class="col-sm-9">{{ driver.safety_score }}</dd>
+  <dt class="col-sm-3">Status</dt><dd class="col-sm-9">{{ driver.status }}</dd>
+  <dt class="col-sm-3">Assignable</dt>
+  <dd class="col-sm-9">
+    {% if driver.is_assignable() %}
+      <span class="badge bg-success">Yes</span>
+    {% else %}
+      <span class="badge bg-secondary">No</span>
+    {% endif %}
+  </dd>
+</dl>
+
+<h4 class="mt-4">Trips</h4>
+<table class="table table-sm">
+  <thead><tr><th>ID</th><th>Route</th><th>Vehicle</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for t in driver.trips %}
+    <tr>
+      <td>{{ t.id }}</td>
+      <td>{{ t.source }} → {{ t.destination }}</td>
+      <td>{{ t.vehicle.reg_number if t.vehicle else "—" }}</td>
+      <td>{{ t.status }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-muted">No trips yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{{ url_for('drivers_bp.list_drivers') }}" class="btn btn-link">&larr; Back to list</a>
+{% endblock %}

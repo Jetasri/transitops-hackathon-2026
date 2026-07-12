@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ "Edit Vehicle" if vehicle else "New Vehicle" }}</h2>
+
+{% set fd = form_data if form_data is not none else vehicle %}
+
+<form method="post">
+  <div class="mb-3">
+    <label class="form-label">Reg Number</label>
+    <input type="text" name="reg_number" class="form-control"
+           value="{{ fd.reg_number if fd else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Vehicle Name / Model</label>
+    <input type="text" name="name" class="form-control"
+           value="{{ fd.name if fd else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Type</label>
+    <input type="text" name="type" class="form-control" placeholder="Truck, Van, Bike..."
+           value="{{ fd.type if fd else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Max Load Capacity (kg)</label>
+    <input type="number" step="any" name="max_load_kg" class="form-control"
+           value="{{ fd.max_load_kg if fd else 0 }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Odometer (km)</label>
+    <input type="number" step="any" name="odometer" class="form-control"
+           value="{{ fd.odometer if fd else 0 }}">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Acquisition Cost</label>
+    <input type="number" step="any" name="acquisition_cost" class="form-control"
+           value="{{ fd.acquisition_cost if fd else 0 }}">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Region</label>
+    <input type="text" name="region" class="form-control"
+           value="{{ fd.region if fd else '' }}">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Status</label>
+    <select name="status" class="form-select">
+      {% for s in statuses %}
+        <option value="{{ s }}" {% if (fd.status if fd else 'Available') == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Save</button>
+  <a href="{{ url_for('vehicles_bp.list_vehicles') }}" class="btn btn-link">Cancel</a>
+</form>
+{% endblock %}
